@@ -1,8 +1,10 @@
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 from datetime import timedelta
 from flask_sqlalchemy import SQLAlchemy
+from view import view_blueprint
 
 app = Flask(__name__)
+app.register_blueprint(view_blueprint, url_prefix="/admin")
 app.secret_key = "1234"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -20,14 +22,11 @@ class users(db.Model):
         self.email = email
 
 
-
+@app.route("/home")
 @app.route("/")
 def home():
     return render_template("index.html")
 
-@app.route("/view")
-def view():
-    return render_template("view.html", values = users.query.all())
 
 @app.route("/login", methods = ["POST", "GET"])
 def login():
